@@ -13,10 +13,10 @@ def bajar_excel_spensiones(a0, yi, yf, fondo)
 end
 
 
-bajar_excel_spensiones(a0, 2015, 2015, 'A')
-bajar_excel_spensiones(a0, 2015, 2015, 'B')
-bajar_excel_spensiones(a0, 2015, 2015, 'C')
-bajar_excel_spensiones(a0, 2015, 2015, 'D')
-bajar_excel_spensiones(a0, 2015, 2015, 'E')
+bajar_excel_spensiones(a0, 2002, 2015, 'A')
+bajar_excel_spensiones(a0, 2002, 2015, 'B')
+bajar_excel_spensiones(a0, 1981, 2015, 'C')
+bajar_excel_spensiones(a0, 2002, 2015, 'D')
+bajar_excel_spensiones(a0, 2000, 2015, 'E')
 
 Webdrone.irb_console
