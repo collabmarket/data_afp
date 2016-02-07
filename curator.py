@@ -20,11 +20,22 @@ def concat(vcf):
         aux = pd.concat([aux,df])
     return aux
 
+def putnames(df):
+    df.columns.names = ['AFP', 'Item']
+    df.index.names = ['Fecha']
+    return df
+
 dfA = concat(vcfA)
 dfB = concat(vcfB)
 dfC = concat(vcfC)
 dfD = concat(vcfD)
 dfE = concat(vcfE)
+
+dfA = putnames(dfA)
+dfB = putnames(dfB)
+dfC = putnames(dfC)
+dfD = putnames(dfD)
+dfE = putnames(dfE)
 
 dfA.to_csv('data/vcfA.csv')
 dfB.to_csv('data/vcfB.csv')
