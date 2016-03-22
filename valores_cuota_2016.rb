@@ -22,13 +22,13 @@ bajar_excel_spensiones(a0, 2016, 2016, 'E')
 
 a0.wait.time        10
 
-descargas = 'J:/Descargas/'
+descargas = Dir.pwd + '/' + a0.conf.outdir + '/'
 rawdata = Dir.pwd + '/rawdata/'
 
-FileUtils.mv(descargas + 'vcfA2016-2016.csv', rawdata)
-FileUtils.mv(descargas + 'vcfB2016-2016.csv', rawdata)
-FileUtils.mv(descargas + 'vcfC2016-2016.csv', rawdata)
-FileUtils.mv(descargas + 'vcfD2016-2016.csv', rawdata)
-FileUtils.mv(descargas + 'vcfE2016-2016.csv', rawdata)
+FileUtils.cp(descargas + 'vcfA2016-2016.csv', rawdata)
+FileUtils.cp(descargas + 'vcfB2016-2016.csv', rawdata)
+FileUtils.cp(descargas + 'vcfC2016-2016.csv', rawdata)
+FileUtils.cp(descargas + 'vcfD2016-2016.csv', rawdata)
+FileUtils.cp(descargas + 'vcfE2016-2016.csv', rawdata)
 
 #~ Webdrone.irb_console
