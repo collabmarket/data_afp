@@ -1,6 +1,6 @@
 import os
 
-clean_hist = True
+clean_hist = False
 clean_year = True
 
 histcsv = ['vcfA2002-2015.csv', 'vcfB2002-2015.csv', 
@@ -11,8 +11,9 @@ yearcsv = ['vcfA2016-2016.csv', 'vcfB2016-2016.csv',
             'vcfC2016-2016.csv', 'vcfD2016-2016.csv', 
             'vcfE2016-2016.csv']
 
-if not os.path.exists('tmp'):
-    os.makedirs('tmp')
+def maketmp():    
+    if not os.path.exists('tmp'):
+        os.makedirs('tmp')
 
 def fillheader(linea):
     lista = linea.split(';')
@@ -29,6 +30,7 @@ def cleancsv(filecsv):
         lines = f_in.readlines()
     
     blanks = [i for (i, s) in enumerate(lines) if s == "\n"]
+    maketmp()
     
     for j in range(len(blanks)):
         f_out = open('tmp/'+file_name+'_%s.'%j+file_ext, 'w')
