@@ -53,8 +53,8 @@ class Spensiones
     # Borra fila con nombre columnas
     df.delete_row(2)
     # Agrega columnas con Fecha y tipo Fondo
-    df[:Fecha] = Array.new(6, date)
-    df[:Fondo] = Array.new(6, fondo)
+    df.add_vector("Fecha", Array.new(6, date))
+    df.add_vector("Fondo", Array.new(6, fondo))
     return df
   end
 end
