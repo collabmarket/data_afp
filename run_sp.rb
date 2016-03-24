@@ -3,10 +3,14 @@ require_relative 'spensiones'
 
 db = Spensiones.new
 db.vc_excel(2016, 2016, 'A')
+today = Time.now
+day = 60*60*24
 
 descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
-df = db.vc_df('2016-02-02', 'A')
+df = db.vc_df((today - 2*day).strftime("%Y-%m-%d"), 'A')
+print db.vc_table(1, 1)
 df.write_csv(descargas + 'data.csv')
+
 #~ index = Daru::DateTimeIndex.date_range(
   #~ :start => '2016-2-1', :periods => 20, :freq => 'D')
 
