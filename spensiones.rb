@@ -26,7 +26,9 @@ class Spensiones
           9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 
           12 => 'Diciembre'}
     url = 'http://www.spensiones.cl/safpstats/stats/apps/vcuofon/vcfAFP.php?tf=' + fondo
-    @a0.open.url         url
+    # URL of the current page
+    curl = @a0.exec.script 'return location.href'
+    @a0.open.url         url      if url != curl
     @a0.form.set         'aaaaVCF', y.to_i
     @a0.form.set         'mmVCF', mes[m.to_i]
     @a0.form.set         'ddVCF', d.to_i
