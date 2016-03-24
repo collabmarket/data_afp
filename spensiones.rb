@@ -42,6 +42,10 @@ class Spensiones
   
   def vc_df(date, fondo)
     vc_date(date, fondo)
+    # Revisa si no existen datos retorna nil
+    if(vc_table(1, 1).nil?)
+      return nil
+    end
     df = Daru::DataFrame.new([], order: (1..3).to_a, index:(2..8).to_a)
     for i in 1..3
       for j in 2..8
