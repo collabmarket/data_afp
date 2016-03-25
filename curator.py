@@ -8,8 +8,9 @@ vcfC = glob.glob("tmp/vcfC*.csv")
 vcfD = glob.glob("tmp/vcfD*.csv")
 vcfE = glob.glob("tmp/vcfE*.csv")
 
-if not os.path.exists('data'):
-    os.makedirs('data')
+def makedata():
+    if not os.path.exists('data'):
+        os.makedirs('data')
 
 def concat(vcf):
     aux = pd.DataFrame()
@@ -18,25 +19,20 @@ def concat(vcf):
                      header=[0,1], index_col=0, 
                      parse_dates=True, decimal=',', thousands='.')
         aux = pd.concat([aux,df])
+    # Agrega nombres a las columnas y el indice
+    aux.columns.names = ['AFP', 'Item']
+    aux.index.names = ['Fecha']
     return aux
 
-def putnames(df):
-    df.columns.names = ['AFP', 'Item']
-    df.index.names = ['Fecha']
-    return df
-
+# Archivos de valor cuota y valor patrimonio un fondo todas las AFP
 dfA = concat(vcfA)
 dfB = concat(vcfB)
 dfC = concat(vcfC)
 dfD = concat(vcfD)
 dfE = concat(vcfE)
 
-dfA = putnames(dfA)
-dfB = putnames(dfB)
-dfC = putnames(dfC)
-dfD = putnames(dfD)
-dfE = putnames(dfE)
 
+makedata()
 dfA.to_csv('data/vcfA.csv')
 dfB.to_csv('data/vcfB.csv')
 dfC.to_csv('data/vcfC.csv')
@@ -52,6 +48,9 @@ vcfE = pd.read_csv('data/vcfE.csv', header=[0,1], index_col=0, parse_dates=True)
 lista = [vcfA, vcfB, vcfC, vcfD, vcfE]
 afps = [i for i in vcfC.columns.levels[0]]
 fondo = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E'}
+
+# Archivos de valor cuota de una AFP todos los fondos
+# Archivos de valor patrimonio de una AFP todos los fondos
 
 for afp in afps:
     vc = pd.DataFrame()
