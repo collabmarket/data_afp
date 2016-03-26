@@ -8,10 +8,12 @@ vcfC = glob.glob("tmp/vcfC*.csv")
 vcfD = glob.glob("tmp/vcfD*.csv")
 vcfE = glob.glob("tmp/vcfE*.csv")
 
+# Crea carpeta data
 def makedata():
     if not os.path.exists('data'):
         os.makedirs('data')
 
+# Concatena archivos con trozos agrega filas y columnas segun el caso
 def concat(vcf):
     aux = pd.DataFrame()
     for f in vcf:
@@ -24,7 +26,6 @@ def concat(vcf):
     aux.index.names = ['Fecha']
     return aux
 
-# Archivos de valor cuota y valor patrimonio un fondo todas las AFP
 dfA = concat(vcfA)
 dfB = concat(vcfB)
 dfC = concat(vcfC)
@@ -33,6 +34,7 @@ dfE = concat(vcfE)
 
 
 makedata()
+# Archivos de valor cuota y valor patrimonio un fondo todas las AFP
 dfA.to_csv('data/vcfA.csv')
 dfB.to_csv('data/vcfB.csv')
 dfC.to_csv('data/vcfC.csv')
