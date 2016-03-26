@@ -64,6 +64,10 @@ for afp in afps:
             vc = pd.concat([vc, vc_aux], axis=1)
             pat = pd.concat([pat, pat_aux], axis=1)
     afp_name = afp.replace(' ', '-')
+    # Elimina filas sin valores
+    vc.dropna(how='all', inplace=True)
+    pat.dropna(how='all', inplace=True)
+    # Crear los archivos csv
     vc.to_csv('data/VC-%s.csv'%afp_name)
     pat.to_csv('data/PAT-%s.csv'%afp_name)
 
