@@ -32,27 +32,25 @@ dfC = concat(vcfC)
 dfD = concat(vcfD)
 dfE = concat(vcfE)
 
-
+lista = [dfA, dfB, dfC, dfD, dfE]
+letra = ['A', 'B', 'C', 'D', 'E']
 makedata()
 # Archivos de valor cuota y valor patrimonio un fondo todas las AFP
-dfA.to_csv('data/vcfA.csv')
-dfB.to_csv('data/vcfB.csv')
-dfC.to_csv('data/vcfC.csv')
-dfD.to_csv('data/vcfD.csv')
-dfE.to_csv('data/vcfE.csv')
+for aux,l in zip(lista,letra):
+    aux.to_csv('data/f%s.csv'%l)
 
-vcfA = pd.read_csv('data/vcfA.csv', header=[0,1], index_col=0, parse_dates=True)
-vcfB = pd.read_csv('data/vcfB.csv', header=[0,1], index_col=0, parse_dates=True)
-vcfC = pd.read_csv('data/vcfC.csv', header=[0,1], index_col=0, parse_dates=True)
-vcfD = pd.read_csv('data/vcfD.csv', header=[0,1], index_col=0, parse_dates=True)
-vcfE = pd.read_csv('data/vcfE.csv', header=[0,1], index_col=0, parse_dates=True)
-
-lista = [vcfA, vcfB, vcfC, vcfD, vcfE]
-afps = [i for i in vcfC.columns.levels[0]]
-fondo = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E'}
+# Archivos de valor cuota un fondo todas las AFP
+# Archivos de valor patrimonio un fondo todas las AFP
+for aux,l in zip(lista,letra):
+    aux.xs('Valor Cuota', axis=1, level=1).to_csv('data/vcf%s.csv'%l)
+    aux.xs('Valor Patrimonio', axis=1, level=1).to_csv('data/patf%s.csv'%l)
 
 # Archivos de valor cuota de una AFP todos los fondos
 # Archivos de valor patrimonio de una AFP todos los fondos
+
+# Fondo C desde inicio tiene nombres de todas las AFP
+afps = [i for i in dfC.columns.levels[0]]
+fondo = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E'}
 
 for afp in afps:
     vc = pd.DataFrame()
