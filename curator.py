@@ -44,6 +44,17 @@ for aux,letra in zip(lista,fondos):
 # Fondo C desde inicio tiene nombres de todas las AFP
 afps = [i for i in lista[2].columns.levels[0]]
 
+# Prepara last month data
+mdf = pd.read_csv('rawdata/month_data.csv', parse_dates=True,
+                decimal=',', thousands='.', index_col=[0,4,3])
+mdf.rename(columns={'Valor Cuota ':'Valor Cuota',
+                   'Valor Fondo ':'Valor Patrimonio'},
+          inplace=True)
+mdf.index.rename([u'AFP', u'Fondo', u'Fecha'], inplace=True)
+# MultiIndex column
+mdf = mdf.unstack(level=(0,1))
+
+
 # Archivos de valor cuota de una AFP todos los fondos
 # Archivos de valor patrimonio de una AFP todos los fondos
 for afp in afps:
@@ -62,6 +73,12 @@ for afp in afps:
     # Elimina filas sin valores
     vc.dropna(how='all', inplace=True)
     pat.dropna(how='all', inplace=True)
+    # Agrega datos ultimo mes si afp estan en mdf
+    if afp in mdf.columns.levels[1]:
+        mvc = mdf.xs(('Valor Cuota',afp), axis=1, level=(0,1))
+        vc = vc.append(mvc)
+        mpat = mdf.xs(('Valor Patrimonio',afp), axis=1, level=(0,1))
+        pat = pat.append(mpat)
     # Crear los archivos csv
     vc.to_csv('data/VC-%s.csv'%afp_name)
     pat.to_csv('data/PAT-%s.csv'%afp_name)
