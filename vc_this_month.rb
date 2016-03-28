@@ -6,7 +6,7 @@ d = 60*60*24
 today = Time.now
 year = today.year
 month = today.month
-days = 1..(today - 2*d).day
+days = 1..(today - 2*d).day if today.day > 2
 fondos = ['A', 'B', 'C', 'D', 'E']
 
 # Check and create df from two days ago
