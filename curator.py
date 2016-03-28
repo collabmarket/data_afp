@@ -26,41 +26,36 @@ def concat(vcf):
     aux.index.names = ['Fecha']
     return aux
 
-dfA = concat(vcfA)
-dfB = concat(vcfB)
-dfC = concat(vcfC)
-dfD = concat(vcfD)
-dfE = concat(vcfE)
-
-lista = [dfA, dfB, dfC, dfD, dfE]
-letra = ['A', 'B', 'C', 'D', 'E']
+lista = [concat(vcfA), concat(vcfB), concat(vcfC), 
+         concat(vcfD), concat(vcfE)]
+fondos = ['A', 'B', 'C', 'D', 'E']
+# Crea carpeta data
 makedata()
 # Archivos de valor cuota y valor patrimonio un fondo todas las AFP
-for aux,l in zip(lista,letra):
-    aux.to_csv('data/f%s.csv'%l)
+for aux,letra in zip(lista,fondos):
+    aux.to_csv('data/f%s.csv'%letra)
 
 # Archivos de valor cuota un fondo todas las AFP
 # Archivos de valor patrimonio un fondo todas las AFP
-for aux,l in zip(lista,letra):
-    aux.xs('Valor Cuota', axis=1, level=1).to_csv('data/vcf%s.csv'%l)
-    aux.xs('Valor Patrimonio', axis=1, level=1).to_csv('data/patf%s.csv'%l)
+for aux,letra in zip(lista,fondos):
+    aux.xs('Valor Cuota', axis=1, level=1).to_csv('data/vcf%s.csv'%letra)
+    aux.xs('Valor Patrimonio', axis=1, level=1).to_csv('data/patf%s.csv'%letra)
+
+# Fondo C desde inicio tiene nombres de todas las AFP
+afps = [i for i in lista[2].columns.levels[0]]
 
 # Archivos de valor cuota de una AFP todos los fondos
 # Archivos de valor patrimonio de una AFP todos los fondos
-
-# Fondo C desde inicio tiene nombres de todas las AFP
-afps = [i for i in dfC.columns.levels[0]]
-fondo = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E'}
-
 for afp in afps:
     vc = pd.DataFrame()
     pat = pd.DataFrame()
-    for i, df in enumerate(lista):
+    for df,letra in zip(lista,fondos):
+        # Verifica si la AFP esta en df
         if afp in df.columns.levels[0]:
             vc_aux = df[afp, 'Valor Cuota']
-            vc_aux.name = fondo[i]
+            vc_aux.name = letra
             pat_aux = df[afp, 'Valor Patrimonio']
-            pat_aux.name = fondo[i]
+            pat_aux.name = letra
             vc = pd.concat([vc, vc_aux], axis=1)
             pat = pd.concat([pat, pat_aux], axis=1)
     afp_name = afp.replace(' ', '-')
