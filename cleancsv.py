@@ -1,15 +1,18 @@
 import os
+from datetime import datetime
 
 clean_hist = False
 clean_year = True
+year = datetime.now().year
+lastyear = year - 1
+inityear = [2002, 2002, 1981, 2002, 2000]
+fondos = list('ABCDE')
 
-histcsv = ['vcfA2002-2015.csv', 'vcfB2002-2015.csv', 
-            'vcfC1981-2015.csv', 'vcfD2002-2015.csv', 
-            'vcfE2000-2015.csv']
+histcsv = ['vcf%s%s-%s.csv'%(i,iy,lastyear) 
+            for i,iy in zip(fondos,inityear)]
 
-yearcsv = ['vcfA2016-2016.csv', 'vcfB2016-2016.csv', 
-            'vcfC2016-2016.csv', 'vcfD2016-2016.csv', 
-            'vcfE2016-2016.csv']
+yearcsv = ['vcf%s%s-%s.csv'%(i,year,year) 
+            for i in fondos]
 
 def maketmp():
     if not os.path.exists('tmp'):
