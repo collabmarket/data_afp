@@ -21,6 +21,7 @@ end
 # Si month_file tiene datos del mes los usa
 if year == lyear and month == lmonth
   # Lista de dias posteriores a month_file
+  ## TODO revisar casos extremos
   days = (lday + 1)..(today - 2*d).day if today.day > 2
 # En otro caso crea month_file desde dia 1
 else
