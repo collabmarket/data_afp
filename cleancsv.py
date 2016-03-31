@@ -1,8 +1,13 @@
 import os
 from datetime import datetime
 
-clean_hist = False
+# Si no existe tmp limpia csv historico
+if not os.path.exists('tmp'):
+    clean_hist = True
+else:
+    clean_hist = False
 clean_year = True
+
 year = datetime.now().year
 lastyear = year - 1
 inityear = [2002, 2002, 1981, 2002, 2000]

@@ -22,5 +22,5 @@ for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{inityear[f]}-#{lastyear}.csv", rawdata)
 end
 
-
-#~ Webdrone.irb_console
+# Remueve la carpeta tmp, para que cleancsv recree archivos
+FileUtils.rm_rf('tmp')
