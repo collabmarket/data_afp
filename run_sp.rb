@@ -13,7 +13,7 @@ run_year = yesno("Update this year?", 'n')
 run_month = yesno("Update this month?", 'y')
 run_nb = yesno("Update notebooks?", 'n')
 
-yesno("Inicio...")
+exit if not yesno("Iniciar?", default = 'y')
 load './vc_historical.rb' if run_hist
 load './vc_this_year.rb' if run_year
 load './vc_this_month.rb' if run_month
