@@ -80,6 +80,12 @@ for afp in afps:
         vc = vc.append(mvc)
         mpat = mdf.xs(('Valor Patrimonio',afp), axis=1, level=(0,1))
         pat = pat.append(mpat)
+    # Elimina datos duplicados
+    vc = vc[~vc.index.duplicated(keep='last')]
+    pat = pat[~pat.index.duplicated(keep='last')]
+    # Ordena index
+    vc.sort_index(inplace=True)
+    pat.sort_index(inplace=True)
     # Crear los archivos csv
     vc.to_csv('data/VC-%s.csv'%afp_name)
     pat.to_csv('data/PAT-%s.csv'%afp_name)
