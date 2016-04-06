@@ -16,10 +16,11 @@ db.a0.wait.time        10
 descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
 rawdata = Dir.pwd + '/rawdata/'
 
+#Crea directorio rawdata si no existe
+FileUtils.mkdir(rawdata) if not File.exist?(rawdata)
+
 # Copia excel valores cuota presente año en rawdata
 for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{year}-#{year}.csv", rawdata)
 end
 
-
-#~ Webdrone.irb_console

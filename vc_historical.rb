@@ -17,6 +17,9 @@ db.a0.wait.time        10
 descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
 rawdata = Dir.pwd + '/rawdata/'
 
+#Crea directorio rawdata
+FileUtils.mkdir(rawdata) if not File.exist?(rawdata)
+
 # Copia excel valores cuota historicos en rawdata
 for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{inityear[f]}-#{lastyear}.csv", rawdata)
