@@ -38,17 +38,26 @@ class Spensiones
   end
   
   def vc_table(i, j)
+    timeout = @a0.conf.timeout
+    @a0.conf.timeout = 1
     xp = "//*[@id=\"main\"]/table[2]/tbody/tr[2]/td[2]/table/tbody/tr[#{i}]/td[#{j}]"
-    return @a0.text.xpath xp
+    aux = @a0.text.xpath xp
+    # Warning: quita espacio final afecta tambien nombre columnas
+    #aux = aux.rstrip
+    @a0.conf.timeout = timeout
+    return aux
   end
   
   def vc_df(date, fondo)
+    # Marca fecha y fondo indicado
     vc_date(date, fondo)
     # Revisa si no existen datos retorna nil
     if(vc_table(1, 1).nil?)
       return nil
     end
+    # Crea un df vacio
     df = Daru::DataFrame.new([], order: (1..3).to_a, index:(2..8).to_a)
+    # Rellena el df con los datos
     for i in 1..3
       for j in 2..8
         df[i][j] = vc_table(j, i)
