@@ -2,36 +2,50 @@ require 'fileutils'
 require_relative 'spensiones'
 
 db = Spensiones.new
-d = 60*60*24
-today = Time.now
-year = today.year
-month = today.month
-dby = (today - 2*d).day # day before yesterday
-# Check last data
-month_file = './rawdata/month_data.csv'
-if File.exist?(month_file)
-  # Fecha ultima linea de month_file
-  # Warning: from_csv change headers order
-  aux = Daru::DataFrame.from_csv './rawdata/month_data.csv'
-  lastday = aux['Fecha'][-1]
-  lyear, lmonth, lday = lastday.split('-').map(&:to_i)
-else
-  # Check and create df from two days ago
-  aux = db.vc_df((today - 2*d).strftime("%Y-%m-%d"), 'A')
+today = DateTime.now
+dbtoday = today - 2 # Day before today (last spensiones data)
+
+def df_data(db,date,fondo)
+  aux = db.vc_df(date.strftime("%Y-%m-%d"), fondo)
   # Delete data from aux only left headers
   for i in 3..8
     aux.delete_row(i)
   end
-  lyear, lmonth, lday = [year, month, 0]
+  return aux
+end
+
+# Check last data
+month_file = './rawdata/month_data.csv'
+if File.exist?(month_file)
+  # Warning: from_csv change headers order
+  aux = Daru::DataFrame.from_csv './rawdata/month_data.csv'
+  # Fecha primera y ultima linea de month_file
+  firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
+  lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
+  # Caso month_file tiene datos de mas de 1 mes
+  if (lastday-firstday).to_i >= 31
+    FileUtils.rm_f(month_file)
+    aux = df_data(db,dbtoday,'A')
+    inicio = DateTime.new(today.year,today.month,1)
+    fin = dbtoday
+  # Caso month_file se puede actualizar
+  else
+    inicio = DateTime.new(lastday.year,lastday.month,lastday.day+1)
+    fin = dbtoday
+  end
+else
+  # Check and create df from two days ago
+  aux = df_data(db,dbtoday,'A')
+  inicio = DateTime.new(today.year,today.month,1)
+  fin = dbtoday
 end
 
 begin
   days = Daru::DateTimeIndex.date_range(
-  :start => DateTime.new(lyear,lmonth,lday+1), 
-  :end   => DateTime.new(year,month,dby), :freq => 'D').to_a
+  :start => inicio, :end => fin, :freq => 'D').to_a
 rescue Exception
-  FileUtils.rm_f(month_file)
-  exit(0)
+  # Caso month_file actualizado
+  days = []
 end
 
 fondos = ['A', 'B', 'C', 'D', 'E']
@@ -51,6 +65,3 @@ rawdata = Dir.pwd + '/rawdata/'
 aux.write_csv(descargas + 'month_data.csv')
 # Copia df valores cuota presente mes en rawdata
 FileUtils.cp(descargas + 'month_data.csv', rawdata)
-
-# Remueve month_file, si cubre mas de un mes
-FileUtils.rm_f(month_file) if days.length > 32 
