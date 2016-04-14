@@ -27,3 +27,6 @@ end
 
 # Remueve la carpeta tmp, para que cleancsv recree archivos
 FileUtils.rm_rf('tmp')
+
+# Close Browser
+db.a0.quit

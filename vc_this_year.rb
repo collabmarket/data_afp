@@ -24,3 +24,5 @@ for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{year}-#{year}.csv", rawdata)
 end
 
+# Close Browser
+db.a0.quit

@@ -2,7 +2,7 @@ require 'fileutils'
 require_relative 'spensiones'
 
 db = Spensiones.new
-today = DateTime.now
+today = DateTime.parse(Time.now.utc.to_s) # date_range same timezone
 dbtoday = today - 2 # Day before today (last spensiones data)
 
 def df_data(db,date,fondo)
@@ -27,22 +27,19 @@ if File.exist?(month_file)
     FileUtils.rm_f(month_file)
     aux = df_data(db,dbtoday,'A')
     inicio = DateTime.new(today.year,today.month,1)
-    fin = dbtoday
   # Caso month_file se puede actualizar
   else
     inicio = DateTime.new(lastday.year,lastday.month,lastday.day+1)
-    fin = dbtoday
   end
 else
   # Check and create df from two days ago
   aux = df_data(db,dbtoday,'A')
   inicio = DateTime.new(today.year,today.month,1)
-  fin = dbtoday
 end
 
 begin
   days = Daru::DateTimeIndex.date_range(
-  :start => inicio, :end => fin, :freq => 'D').to_a
+  :start => inicio, :end => dbtoday, :freq => 'D').to_a
 rescue Exception
   # Caso month_file actualizado
   days = []
@@ -65,3 +62,6 @@ rawdata = Dir.pwd + '/rawdata/'
 aux.write_csv(descargas + 'month_data.csv')
 # Copia df valores cuota presente mes en rawdata
 FileUtils.cp(descargas + 'month_data.csv', rawdata)
+
+# Close Browser
+db.a0.quit
