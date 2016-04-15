@@ -6,6 +6,7 @@ if not os.path.exists('tmp'):
     clean_hist = True
 else:
     clean_hist = False
+# Siempre limpia csv presente
 clean_year = True
 
 year = datetime.now().year
@@ -38,7 +39,7 @@ def cleancsv(filecsv):
     '''
     file_name, file_ext = filecsv.split('.')
     
-    with open('rawdata/'+filecsv, 'r') as f_in:
+    with open('rawdata/'+filecsv, 'rU') as f_in:
         lines = f_in.readlines()
     # Enumera lineas en blanco que separan trozos de datos
     # Trozos tienen distintas AFP encabezados no homogeneos
