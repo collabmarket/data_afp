@@ -8,8 +8,12 @@ def yesno(prompt = 'Continue?', default = 'y')
     input = default if input.empty?
     return input == 'y'
 end
-run_hist = yesno("Update historical?", 'n')
-run_year = yesno("Update this year?", 'n')
+
+first_run = 'y'
+first_run = 'n' if File.directory?('tmp')
+
+run_hist = yesno("Update historical?", first_run)
+run_year = yesno("Update this year?", first_run)
 run_month = yesno("Update this month?", 'y')
 run_nb = yesno("Update notebooks?", 'n')
 
