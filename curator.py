@@ -26,8 +26,11 @@ def concat(vcf):
     aux.index.names = ['Fecha']
     return aux
 
-lista = [concat(vcfA), concat(vcfB), concat(vcfC), 
-         concat(vcfD), concat(vcfE)]
+lista = [concat(vcfA).sort_index(), 
+         concat(vcfB).sort_index(), 
+         concat(vcfC).sort_index(), 
+         concat(vcfD).sort_index(), 
+         concat(vcfE).sort_index()]
 fondos = ['A', 'B', 'C', 'D', 'E']
 # Crea carpeta data
 makedata()
