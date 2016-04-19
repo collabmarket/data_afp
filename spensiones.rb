@@ -72,6 +72,27 @@ class Spensiones
     df.add_vector("Fondo", Array.new(6, fondo))
     return df
   end
+  
+  def vc_df_head(date, fondo)
+  aux = vc_df(date.strftime("%Y-%m-%d"), fondo)
+  # Delete data from aux only left headers
+  for i in 3..8
+    aux.delete_row(i)
+  end
+  return aux
+  end
+  
+  def vc_last(fondo)
+    url = 'http://www.spensiones.cl/safpstats/stats/apps/vcuofon/vcfAFP.php?tf=' + fondo
+    @a0.open.url         url
+    aux = vc_table(1, 1).split("\n")[0]
+    d, m, y = aux.split('-')
+    imes = {'Enero' => 1, 'Febrero' => 2, 'Marzo' => 3, 'Abril' => 4, 
+          'Mayo' => 5, 'Junio' => 6, 'Julio' => 7, 'Agosto' => 8, 
+          'Septiembre' => 9, 'Octubre' => 10, 'Noviembre' => 11, 
+          'Diciembre' => 12}
+    return DateTime.new(y.to_i, imes[m], d.to_i)
+  end
 end
 
 

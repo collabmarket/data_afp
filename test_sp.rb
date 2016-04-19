@@ -3,11 +3,12 @@ require_relative 'spensiones'
 
 db = Spensiones.new
 db.vc_excel(2016, 2016, 'A')
-today = Time.now
-day = 60*60*24
+today = DateTime.parse(Time.now.utc.to_s) # date_range same timezone
+lastday = db.vc_last('A')
 
 descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
-df = db.vc_df((today - 2*day).strftime("%Y-%m-%d"), 'A')
+df = db.vc_df(lastday.strftime("%Y-%m-%d"), 'A')
+db.vc_df_head(lastday, 'A')
 puts db.vc_table(1, 1)
 puts 'df: Readed from web'
 df.write_csv(descargas + 'data.csv')

@@ -3,16 +3,7 @@ require_relative 'spensiones'
 
 db = Spensiones.new
 today = DateTime.parse(Time.now.utc.to_s) # date_range same timezone
-dbtoday = today - 2 # Day before today (last spensiones data)
-
-def df_data(db,date,fondo)
-  aux = db.vc_df(date.strftime("%Y-%m-%d"), fondo)
-  # Delete data from aux only left headers
-  for i in 3..8
-    aux.delete_row(i)
-  end
-  return aux
-end
+lastday_sp = db.vc_last('A')
 
 # Check last data
 month_file = './rawdata/month_data.csv'
@@ -22,24 +13,27 @@ if File.exist?(month_file)
   # Fecha primera y ultima linea de month_file
   firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
   lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
-  # Caso month_file tiene datos de mas de 1 mes
+  # Caso month_file tiene datos de mas de un mes
   if (lastday-firstday).to_i >= 31
     FileUtils.rm_f(month_file)
-    aux = df_data(db,dbtoday,'A')
+    aux = db.vc_df_head(lastday_sp, 'A')
+    # inicio mes
     inicio = DateTime.new(today.year,today.month,1)
   # Caso month_file se puede actualizar
   else
+    # inicio ultimo dia month_file mas 1
     inicio = DateTime.new(lastday.year,lastday.month,lastday.day+1)
   end
 else
-  # Check and create df from two days ago
-  aux = df_data(db,dbtoday,'A')
+  # Caso no existe month_file
+  aux = db.vc_df_head(lastday_sp, 'A')
+  # inicio mes
   inicio = DateTime.new(today.year,today.month,1)
 end
 
 begin
   days = Daru::DateTimeIndex.date_range(
-  :start => inicio, :end => dbtoday, :freq => 'D').to_a
+  :start => inicio, :end => lastday_sp, :freq => 'D').to_a
 rescue Exception
   # Caso month_file actualizado
   days = []
