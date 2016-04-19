@@ -1,6 +1,9 @@
 require 'fileutils'
 require_relative 'spensiones'
 
+# Exec init
+puts Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "this_year" + "--" +"INIT"
+
 db = Spensiones.new
 year = Time.now.year
 fondos = ['A', 'B', 'C', 'D', 'E']
@@ -26,3 +29,6 @@ end
 
 # Close Browser
 db.a0.quit
+
+# Exec ok
+puts Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "this_year" + "--" + "DONE"

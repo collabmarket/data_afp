@@ -1,6 +1,9 @@
 require 'fileutils'
 require_relative 'spensiones'
 
+# Exec init
+puts Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "this_month" + "--" +"INIT"
+
 db = Spensiones.new
 today = DateTime.parse(Time.now.utc.to_s) # date_range same timezone
 lastday_sp = db.vc_last('A')
@@ -59,3 +62,6 @@ FileUtils.cp(descargas + 'month_data.csv', rawdata)
 
 # Close Browser
 db.a0.quit
+
+# Exec ok
+puts Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "this_month" + "--" + "DONE"

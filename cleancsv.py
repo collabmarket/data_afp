@@ -70,9 +70,13 @@ def main():
     if clean_hist:
         for filecsv in histcsv:
             cleancsv(filecsv)
+        # Exec ok
+        print datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "clean_historical" + "--" + "OK"
     if clean_year:
         for filecsv in yearcsv:
             cleancsv(filecsv)
+        # Exec ok
+        print datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "clean_this_year" + "--" + "OK"
 
 if __name__ == "__main__":
     main()
