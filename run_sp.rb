@@ -23,6 +23,10 @@ load './vc_this_year.rb' if run_year
 load './vc_this_month.rb' if run_month
 %x( python cleancsv.py )
 %x( python curator.py )
-%x( jupyter nbconvert --to notebook --execute A-E_AFP.ipynb ) if run_nb
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaAFP.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaCapital.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaCuprum.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaHabitat.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaModelo.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaPlanvital.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaProvida.ipynb ) if run_nb
 yesno("Finalizado")
