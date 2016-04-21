@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export DISPLAY=:0
+export PATH=$HOME/miniconda/bin:$PATH
 cd $(dirname "$0")
 LOG_FILE="spension.log"
 
