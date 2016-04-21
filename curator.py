@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 # Exec init
-print datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "INIT"
+print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "INIT"
 
 
 vcfA = glob.glob("tmp/vcfA*.csv")
@@ -99,4 +99,4 @@ for afp in afps:
     pat.to_csv('data/PAT-%s.csv'%afp_name)
 
 # Exec ok
-print datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "DONE"
+print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "DONE"

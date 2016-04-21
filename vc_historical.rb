@@ -2,7 +2,7 @@ require 'fileutils'
 require_relative 'spensiones'
 
 # Exec init
-puts Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "historical" + "--" +"INIT"
+puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "historical" + "--" +"INIT"
 
 db = Spensiones.new
 lastyear = Time.now.year - 1
@@ -35,4 +35,4 @@ FileUtils.rm_rf('tmp')
 db.a0.quit
 
 # Exec ok
-puts Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "historical" + "--" +"DONE"
+puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "historical" + "--" +"DONE"
