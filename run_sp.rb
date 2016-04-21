@@ -23,10 +23,10 @@ load './vc_this_year.rb' if run_year
 load './vc_this_month.rb' if run_month
 %x( python cleancsv.py )
 %x( python curator.py )
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaCapital.ipynb ) if run_nb
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaCuprum.ipynb ) if run_nb
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaHabitat.ipynb ) if run_nb
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaModelo.ipynb ) if run_nb
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaPlanvital.ipynb ) if run_nb
-%x( jupyter nbconvert --to notebook --execute ValoresCuotaProvida.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaCapital.ipynb --output ValoresCuotaCapital.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaCuprum.ipynb --output ValoresCuotaCuprum.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaHabitat.ipynb --output ValoresCuotaHabitat.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaModelo.ipynb --output ValoresCuotaModelo.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaPlanvital.ipynb --output ValoresCuotaPlanvital.ipynb ) if run_nb
+%x( jupyter nbconvert --to notebook --execute ValoresCuotaProvida.ipynb --output ValoresCuotaProvida.ipynb ) if run_nb
 yesno("Finalizado")
