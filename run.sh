@@ -4,7 +4,7 @@ export DISPLAY=:0
 export PATH=$HOME/miniconda/bin:$PATH
 cd $(dirname "$0")
 LOG_FILE="spension.log"
-DATE=$(date +%Y-%M-%d)
+DATE=$(date +%Y-%m-%d)
 
 git pull 2>&1 | tee -a ${LOG_FILE}
 ruby vc_historical.rb 2>&1 | tee -a ${LOG_FILE}
