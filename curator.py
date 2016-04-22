@@ -55,14 +55,15 @@ afps = [i for i in lista[2].columns.levels[0]]
 # Prepara last month data
 mdf = pd.read_csv('rawdata/month_data.csv', parse_dates=True,
                 decimal=',', thousands='.', 
-                index_col=['A.F.P.', 'Fondo', 'Fecha'])
+                index_col=['A.F.P.', 'Fondo', 'Fecha'], na_values='-- ')
 mdf.rename(columns={'Valor Cuota ':'Valor Cuota',
                    'Valor Fondo ':'Valor Patrimonio'},
           inplace=True)
 mdf.index.rename([u'AFP', u'Fondo', u'Fecha'], inplace=True)
 # MultiIndex column equivalente a vc y pat
 mdf = mdf.unstack(level=(0,1))
-
+# Elimina filas con valores nan
+mdf.dropna(inplace=True)
 
 # Archivos de valor cuota de una AFP todos los fondos
 # Archivos de valor patrimonio de una AFP todos los fondos
