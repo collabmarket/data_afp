@@ -4,7 +4,9 @@ export DISPLAY=:0
 export PATH=$HOME/miniconda/bin:$PATH
 cd $(dirname "$0")
 LOG_FILE="spension.log"
+DATE=$(date +%Y-%M-%d)
 
+git pull 2>&1 | tee -a ${LOG_FILE}
 ruby vc_historical.rb 2>&1 | tee -a ${LOG_FILE}
 ruby vc_this_year.rb  2>&1 | tee -a ${LOG_FILE}
 ruby vc_this_month.rb  2>&1 | tee -a ${LOG_FILE}
@@ -16,3 +18,6 @@ jupyter nbconvert --to notebook --execute ValoresCuotaHabitat.ipynb --output Val
 jupyter nbconvert --to notebook --execute ValoresCuotaModelo.ipynb --output ValoresCuotaModelo.ipynb 2>&1 | tee -a ${LOG_FILE}
 jupyter nbconvert --to notebook --execute ValoresCuotaPlanvital.ipynb --output ValoresCuotaPlanvital.ipynb 2>&1 | tee -a ${LOG_FILE}
 jupyter nbconvert --to notebook --execute ValoresCuotaProvida.ipynb --output ValoresCuotaProvida.ipynb 2>&1 | tee -a ${LOG_FILE}
+git add rawdata/*.csv data/*.csv *.ipynb 2>&1 | tee -a ${LOG_FILE}
+git commit -m "Update data and nb $DATE" 2>&1 | tee -a ${LOG_FILE}
+git push 2>&1 | tee -a ${LOG_FILE}
