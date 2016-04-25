@@ -16,6 +16,13 @@ if File.exist?(month_file)
   # Fecha primera y ultima linea de month_file
   firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
   lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
+  # Busca datos incompletos
+  aux_nan = aux.filter(:row) do |row|
+            row['Valor Cuota '] == "-- "
+            end
+  # Fecha dato incompleto
+  fecha_nan = aux_nan['Fecha'][0]
+  lastday = DateTime.strptime(fecha_nan, '%Y-%m-%d') if fecha_nan != nil
   # Caso month_file tiene datos de mas de un mes
   if (lastday-firstday).to_i >= 31
     FileUtils.rm_f(month_file)
