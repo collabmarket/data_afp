@@ -8,11 +8,21 @@ puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" +
 db = Spensiones.new
 today = DateTime.parse(Time.now.utc.to_s) # date_range same timezone
 lastday_sp = db.vc_last('A')
+year = lastday_sp.year
 
 # Check last data
 rawdata = Dir.pwd + '/rawdata/'
 month_file = rawdata + 'month_data.csv'
+year_file = rawdata + "vcfA#{year}-#{year}.csv"
 
+if File.exist?(year_file)
+  # Read last line of year_file split and extract last
+  day = IO.readlines(year_file)[-1].split(";")[0]
+  year_lastday = DateTime.strptime(day, '%Y-%m-%d')
+else
+  year_lastday = DateTime.new(today.year,today.month,1)
+end
+ 
 if File.exist?(month_file)
   # Warning: from_csv change headers order
   aux = Daru::DataFrame.from_csv month_file
@@ -30,8 +40,8 @@ if File.exist?(month_file)
   firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
   lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
   # Caso month_file tiene datos de mas de un mes
-  # TODO: Eliminar datos mes pasado cuando se agregan en vc_year
-  if (lastday-firstday).to_i >= 31
+  # Elimina datos mes pasado cuando se agregan en vc_year
+  if (year_lastday - firstday).to_i > 0
     FileUtils.rm_f(month_file)
     aux = db.vc_df_head(lastday_sp, 'A')
     # inicio mes
