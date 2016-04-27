@@ -2,7 +2,7 @@ require 'fileutils'
 require_relative 'spensiones'
 
 # Exec init
-puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
      "vc_year" + "--" +"INIT"
 
 db = Spensiones.new
@@ -32,5 +32,5 @@ end
 db.a0.quit
 
 # Exec ok
-puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
      "vc_year" + "--" + "DONE"
