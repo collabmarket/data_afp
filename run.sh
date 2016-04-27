@@ -8,8 +8,8 @@ DATE=$(date +%Y-%m-%d)
 
 git pull 2>&1 | tee -a ${LOG_FILE}
 ruby vc_historical.rb 2>&1 | tee -a ${LOG_FILE}
-ruby vc_this_year.rb  2>&1 | tee -a ${LOG_FILE}
-ruby vc_this_month.rb  2>&1 | tee -a ${LOG_FILE}
+ruby vc_year.rb  2>&1 | tee -a ${LOG_FILE}
+ruby vc_month.rb  2>&1 | tee -a ${LOG_FILE}
 python cleancsv.py  2>&1 | tee -a ${LOG_FILE}
 python curator.py 2>&1 | tee -a ${LOG_FILE}
 jupyter nbconvert --to notebook --execute ValoresCuotaCapital.ipynb --output ValoresCuotaCapital.ipynb 2>&1 | tee -a ${LOG_FILE}

@@ -19,8 +19,8 @@ run_nb = yesno("Update notebooks?", 'n')
 
 exit if not yesno("Iniciar?", default = 'y')
 load './vc_historical.rb' if run_hist
-load './vc_this_year.rb' if run_year
-load './vc_this_month.rb' if run_month
+load './vc_year.rb' if run_year
+load './vc_month.rb' if run_month
 %x( python cleancsv.py )
 %x( python curator.py )
 %x( jupyter nbconvert --to notebook --execute ValoresCuotaCapital.ipynb --output ValoresCuotaCapital.ipynb ) if run_nb
