@@ -2,7 +2,8 @@ require 'fileutils'
 require_relative 'spensiones'
 
 # Exec init
-puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "this_month" + "--" +"INIT"
+puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+     "vc_month" + "--" +"INIT"
 
 db = Spensiones.new
 today = DateTime.parse(Time.now.utc.to_s) # date_range same timezone
@@ -54,7 +55,7 @@ if (lastday_sp - inicio).to_i == 0
 elsif (lastday_sp - inicio).to_i == -1
   days = []
   puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
-       "this_month" + "--" + "UPDATED"
+       "vc_month" + "--" + "UPDATED"
 else
   begin
     # Caso month_file varios dias
@@ -65,7 +66,7 @@ else
     # Si existe un error no actualiza 
     days = []
     puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
-         "this_month" + "--" + "FAILED"
+         "vc_month" + "--" + "FAILED"
   end
 end
 
@@ -90,4 +91,5 @@ FileUtils.cp(descargas + 'month_data.csv', rawdata)
 db.a0.quit
 
 # Exec ok
-puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + "this_month" + "--" + "DONE"
+puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+     "vc_month" + "--" + "DONE"
