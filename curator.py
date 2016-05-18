@@ -62,8 +62,6 @@ mdf.rename(columns={'Valor Cuota ':'Valor Cuota',
 mdf.index.rename([u'AFP', u'Fondo', u'Fecha'], inplace=True)
 # MultiIndex column equivalente a vc y pat
 mdf = mdf.unstack(level=(0,1))
-# Elimina filas con valores nan
-mdf.dropna(inplace=True)
 
 # Archivos de valor cuota de una AFP todos los fondos
 # Archivos de valor patrimonio de una AFP todos los fondos
