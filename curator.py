@@ -6,7 +6,7 @@ from datetime import datetime
 # Exec init
 print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "INIT"
 
-
+# Listado archivos cada fondo
 vcfA = glob.glob("tmp/vcfA*.csv")
 vcfB = glob.glob("tmp/vcfB*.csv")
 vcfC = glob.glob("tmp/vcfC*.csv")
@@ -21,81 +21,86 @@ def makedata():
 # Concatena archivos con trozos agrega filas y columnas segun el caso
 def concat(vcf):
     aux = pd.DataFrame()
+    # Opciones lectura csv con Multi-level index
+    karg_vcf = dict(delimiter=';', header=[0,1], index_col=0, 
+                    parse_dates=True, decimal=',', thousands='.')
     for f in vcf:
-        df = pd.read_csv(f, delimiter=';', 
-                     header=[0,1], index_col=0, 
-                     parse_dates=True, decimal=',', thousands='.')
+        df = pd.read_csv(f, **karg_vcf)
         aux = pd.concat([aux,df])
     # Agrega nombres a las columnas y el indice
     aux.columns.names = ['AFP', 'Item']
     aux.index.names = ['Fecha']
-    return aux
+    # Ordena segun index
+    return aux.sort_index()
 
-lista = [concat(vcfA).sort_index(), 
-         concat(vcfB).sort_index(), 
-         concat(vcfC).sort_index(), 
-         concat(vcfD).sort_index(), 
-         concat(vcfE).sort_index()]
-fondos = ['A', 'B', 'C', 'D', 'E']
+data = {'A': concat(vcfA), 'B': concat(vcfB), 'C': concat(vcfC), 
+        'D': concat(vcfD), 'E': concat(vcfE)}
 # Crea carpeta data
 makedata()
-# Archivos de valor cuota y valor patrimonio un fondo todas las AFP
-for aux,letra in zip(lista,fondos):
-    aux.to_csv('data/f%s.csv'%letra)
+# Recorre todos los fondos
+for letra in sorted(data.keys()):
+    aux = data[letra]
+    # Archivos de VC y PAT un fondo todas las AFP
+    csvfname = 'data/f%s.csv'%letra
+    aux.to_csv(csvfname)
 
-# Archivos de valor cuota un fondo todas las AFP
-# Archivos de valor patrimonio un fondo todas las AFP
-for aux,letra in zip(lista,fondos):
-    aux.xs('Valor Cuota', axis=1, level=1).to_csv('data/vcf%s.csv'%letra)
-    aux.xs('Valor Patrimonio', axis=1, level=1).to_csv('data/patf%s.csv'%letra)
+col_names = zip(['vcf','patf'],['Valor Cuota','Valor Patrimonio'])
+# Recorre todos los fondos
+for letra in sorted(data.keys()):
+    aux = data[letra]
+    # Recorre VC y PAT
+    for name, col in col_names:
+        df = aux.xs(col, axis=1, level=1)
+        # Archivos de VC un fondo todas las AFP
+        # Archivos de PAT un fondo todas las AFP
+        csvfname = 'data/%s%s.csv'%(name, letra)
+        df.to_csv(csvfname)
 
-# Fondo C desde inicio tiene nombres de todas las AFP
-afps = [i for i in lista[2].columns.levels[0]]
-
-# Prepara last month data
-mdf = pd.read_csv('rawdata/month_data.csv', parse_dates=True,
-                decimal=',', thousands='.', 
-                index_col=['A.F.P.', 'Fondo', 'Fecha'], na_values='-- ')
-mdf.rename(columns={'Valor Cuota ':'Valor Cuota',
-                   'Valor Fondo ':'Valor Patrimonio'},
-          inplace=True)
+# Prepara last month data en mdf
+karg_mdf = dict(parse_dates=True, decimal=',', thousands='.', 
+                index_col=['A.F.P.', 'Fondo', 'Fecha'], 
+                na_values='-- ')
+mdf = pd.read_csv('rawdata/month_data.csv', **karg_mdf)
+col_rename = {'Valor Cuota ':'Valor Cuota', 
+              'Valor Fondo ':'Valor Patrimonio'}
+mdf.rename(columns=col_rename, inplace=True)
 mdf.index.rename([u'AFP', u'Fondo', u'Fecha'], inplace=True)
 # MultiIndex column equivalente a vc y pat
 mdf = mdf.unstack(level=(0,1))
 
-# Archivos de valor cuota de una AFP todos los fondos
-# Archivos de valor patrimonio de una AFP todos los fondos
+# Fondo C tiene nombres de todas las AFP
+afps = [i for i in data['C'].columns.levels[0]]
+
+col_names = zip(['VC','PAT'],['Valor Cuota','Valor Patrimonio'])
+# Recorre todas las AFP 
 for afp in afps:
-    vc = pd.DataFrame()
-    pat = pd.DataFrame()
-    for df,letra in zip(lista,fondos):
-        # Verifica si la AFP esta en df
-        if afp in df.columns.levels[0]:
-            vc_aux = df[afp, 'Valor Cuota']
-            vc_aux.name = letra
-            pat_aux = df[afp, 'Valor Patrimonio']
-            pat_aux.name = letra
-            vc = pd.concat([vc, vc_aux], axis=1)
-            pat = pd.concat([pat, pat_aux], axis=1)
-    afp_name = afp.replace(' ', '-')
-    # Elimina filas sin valores
-    vc.dropna(how='all', inplace=True)
-    pat.dropna(how='all', inplace=True)
-    # Agrega datos ultimo mes si afp estan en mdf
-    if afp in mdf.columns.levels[1]:
-        mvc = mdf.xs(('Valor Cuota',afp), axis=1, level=(0,1))
-        vc = vc.append(mvc)
-        mpat = mdf.xs(('Valor Patrimonio',afp), axis=1, level=(0,1))
-        pat = pat.append(mpat)
-    # Elimina datos duplicados
-    vc = vc[~vc.index.duplicated(keep='last')]
-    pat = pat[~pat.index.duplicated(keep='last')]
-    # Ordena index
-    vc.sort_index(inplace=True)
-    pat.sort_index(inplace=True)
-    # Crear los archivos csv
-    vc.to_csv('data/VC-%s.csv'%afp_name)
-    pat.to_csv('data/PAT-%s.csv'%afp_name)
+    # Recorre VC y PAT
+    for name, col in col_names:
+        df = pd.DataFrame()
+        # Recorre todos los fondos
+        for letra in sorted(data.keys()):
+            aux = data[letra]
+            # Verifica si la AFP esta en aux
+            if afp in aux.columns.levels[0]:
+                df_aux = aux[afp, col]
+                df_aux.name = letra
+                df = pd.concat([df, df_aux], axis=1)
+        # Elimina filas sin valores
+        df.dropna(how='all', inplace=True)
+        # Agrega datos ultimo mes si afp estan en mdf
+        if afp in mdf.columns.levels[1]:
+            mdf_aux = mdf.xs((col,afp), axis=1, level=(0,1))
+            df = df.append(mdf_aux)
+        # Elimina datos duplicados
+        df = df[~df.index.duplicated(keep='last')]
+        # Ordena index
+        df.sort_index(inplace=True)
+        # Reemplaza espacios para nombre archivos
+        afp_name = afp.replace(' ', '-')
+        # Archivos de VC una AFP todos los fondos
+        # Archivos de PAT una AFP todos los fondos
+        csvfname = 'data/%s-%s.csv'%(name, afp_name)
+        df.to_csv(csvfname)
 
 # Exec ok
 print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "DONE"
