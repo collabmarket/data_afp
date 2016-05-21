@@ -13,6 +13,9 @@ vcfC = glob.glob("tmp/vcfC*.csv")
 vcfD = glob.glob("tmp/vcfD*.csv")
 vcfE = glob.glob("tmp/vcfE*.csv")
 
+# Opciones escrituda de archivos csv
+karg_csv = dict(sep=';', decimal=',')
+
 # Crea carpeta data
 def makedata():
     if not os.path.exists('data'):
@@ -43,7 +46,7 @@ for letra in sorted(data.keys()):
     aux = data[letra]
     # Archivos de VC y PAT un fondo todas las AFP
     csvfname = 'data/f%s.csv'%letra
-    aux.to_csv(csvfname)
+    aux.to_csv(csvfname, **karg_csv)
 
 col_names = zip(['vcf','patf'],['Valor Cuota','Valor Patrimonio'])
 # Recorre todos los fondos
@@ -55,7 +58,7 @@ for letra in sorted(data.keys()):
         # Archivos de VC un fondo todas las AFP
         # Archivos de PAT un fondo todas las AFP
         csvfname = 'data/%s%s.csv'%(name, letra)
-        df.to_csv(csvfname)
+        df.to_csv(csvfname, **karg_csv)
 
 # Prepara last month data en mdf
 karg_mdf = dict(parse_dates=True, decimal=',', thousands='.', 
@@ -101,7 +104,7 @@ for afp in afps:
         # Archivos de VC una AFP todos los fondos
         # Archivos de PAT una AFP todos los fondos
         csvfname = 'data/%s-%s.csv'%(name, afp_name)
-        df.to_csv(csvfname)
+        df.to_csv(csvfname, **karg_csv)
 
 # Exec ok
 print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "DONE"
