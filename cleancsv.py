@@ -23,6 +23,7 @@ yearcsv = ['vcf%s%s-%s.csv'%(i,year,year)
 def maketmp():
     if not os.path.exists('tmp'):
         os.makedirs('tmp')
+        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "mkdir tmp" + "--" + "OK"
 
 def fillheader(linea):
     ''' Crea un encabezado valido para pandas Multi-level index

@@ -17,6 +17,7 @@ vcfE = glob.glob("tmp/vcfE*.csv")
 def makedata():
     if not os.path.exists('data'):
         os.makedirs('data')
+        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "mkdir data" + "--" + "OK"
 
 # Concatena archivos con trozos agrega filas y columnas segun el caso
 def concat(vcf):
