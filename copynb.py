@@ -1,4 +1,3 @@
-import glob
 import io
 import argparse
 from datetime import datetime
@@ -7,6 +6,8 @@ from nbconvert.preprocessors import ExecutePreprocessor
 
 # Permite modificar solo nb_base y replicar cambios en nbs
 nb_base = 'ValoresCuotaCuprum.ipynb'
+afps = ['Provida', 'Capital', 'Modelo', 'Planvital', 'Habitat']
+nbs = ['ValoresCuota%s.ipynb'%s for s in afps]
 
 # Funcion procesa nb
 def nbexec(nb_base, nb):
@@ -16,9 +17,10 @@ def nbexec(nb_base, nb):
     with io.open(nb_base, 'rt') as f:
         aux = nbformat.read(f, as_version=4)
     # Reemplaza afp_name
-    aux.cells[1]['source'] = aux.cells[1].source.replace(base_name, afp_name)
+    u = aux['cells'][1]['source'].replace(base_name, afp_name)
+    aux['cells'][1]['source'] = u
     # Opciones
-    ep = ExecutePreprocessor(timeout=600)
+    ep = ExecutePreprocessor(timeout=300)
     # Procesa aux (Revisar si preprocess modifica aux)
     ep.preprocess(aux, {})
     # Escribe nb destino
@@ -27,9 +29,6 @@ def nbexec(nb_base, nb):
     print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "nbexec" + "--" + nb
 
 def processall():
-    # Listado notebooks a copiar
-    nbs = glob.glob("ValoresCuota*.ipynb")
-    nbs.remove(nb_base)
     # Procesa nb base
     nbexec(nb_base,  nb_base)
     # Procesa lista nbs
