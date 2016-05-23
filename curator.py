@@ -1,10 +1,12 @@
+from __future__ import print_function
 import glob
 import os
 import pandas as pd
 from datetime import datetime
 
 # Exec init
-print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "INIT"
+print("[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + 
+      "--" + "curator" + "--" + "INIT")
 
 # Listado archivos cada fondo
 vcfA = glob.glob("tmp/vcfA*.csv")
@@ -20,7 +22,8 @@ karg_csv = dict(sep=';', decimal=',')
 def makedata():
     if not os.path.exists('data'):
         os.makedirs('data')
-        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "mkdir data" + "--" + "OK"
+        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
+              "--" + "curator mkdir data" + "--" + "OK")
 
 # Concatena archivos con trozos agrega filas y columnas segun el caso
 def concat(vcf):
@@ -39,10 +42,12 @@ def concat(vcf):
 
 data = {'A': concat(vcfA), 'B': concat(vcfB), 'C': concat(vcfC), 
         'D': concat(vcfD), 'E': concat(vcfE)}
+fondos = sorted(data.keys())
+
 # Crea carpeta data
 makedata()
 # Recorre todos los fondos
-for letra in sorted(data.keys()):
+for letra in fondos:
     aux = data[letra]
     # Archivos de VC y PAT un fondo todas las AFP
     csvfname = 'data/f%s.csv'%letra
@@ -50,7 +55,7 @@ for letra in sorted(data.keys()):
 
 col_names = zip(['vcf','patf'],['Valor Cuota','Valor Patrimonio'])
 # Recorre todos los fondos
-for letra in sorted(data.keys()):
+for letra in fondos:
     aux = data[letra]
     # Recorre VC y PAT
     for name, col in col_names:
@@ -82,7 +87,7 @@ for afp in afps:
     for name, col in col_names:
         df = pd.DataFrame()
         # Recorre todos los fondos
-        for letra in sorted(data.keys()):
+        for letra in fondos:
             aux = data[letra]
             # Verifica si la AFP esta en aux
             if afp in aux.columns.levels[0]:
@@ -107,4 +112,5 @@ for afp in afps:
         df.to_csv(csvfname, **karg_csv)
 
 # Exec ok
-print "[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + "--" + "curator" + "--" + "DONE"
+print("[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + 
+      "--" + "curator" + "--" + "DONE")
