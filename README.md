@@ -13,7 +13,7 @@
 
 Archivos Valor Cuota una AFP todos los fondos:
 
-- [Valores Cuota AFP Cuprum](https://rawgit.com/collabmarket/data_afp/master/data/VC-CUPRUM.csv)
+- [Valores Cuota AFP CUPRUM](https://rawgit.com/collabmarket/data_afp/master/data/VC-CUPRUM.csv)
 - [Valores Cuota AFP CAPITAL](https://rawgit.com/collabmarket/data_afp/master/data/VC-CAPITAL.csv)
 - [Valores Cuota AFP HABITAT](https://rawgit.com/collabmarket/data_afp/master/data/VC-HABITAT.csv)
 - [Valores Cuota AFP MODELO](https://rawgit.com/collabmarket/data_afp/master/data/VC-MODELO.csv)
