@@ -22,15 +22,21 @@ descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
 rawdata = Dir.pwd + '/rawdata/'
 
 #Crea directorio rawdata
-FileUtils.mkdir(rawdata) if not File.exist?(rawdata)
+if not File.exist?(rawdata)
+  FileUtils.mkdir(rawdata)
+  puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
+  "mkdir rawdata" + "--" +"OK"
+end
 
 # Copia excel valores cuota historicos en rawdata
 for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{inityear[f]}-#{lastyear}.csv", rawdata)
 end
 
-# Remueve la carpeta tmp, para que cleancsv recree archivos
+# Remueve la carpeta tmp, eso indica a cleancsv recrear archivos historicos
 FileUtils.rm_rf('tmp')
+puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
+     "rm tmp" + "--" +"OK"
 
 # Close Browser
 db.a0.quit
