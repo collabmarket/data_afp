@@ -21,9 +21,13 @@ descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
 rawdata = Dir.pwd + '/rawdata/'
 
 #Crea directorio rawdata si no existe
-FileUtils.mkdir(rawdata) if not File.exist?(rawdata)
+if not File.exist?(rawdata)
+  FileUtils.mkdir(rawdata)
+  puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
+  "vc_year mkdir rawdata" + "--" +"OK"
+end
 
-# Copia excel valores cuota presente año en rawdata
+# Copia excel valores cuota presente agno en rawdata
 for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{year}-#{year}.csv", rawdata)
 end
