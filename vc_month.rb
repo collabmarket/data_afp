@@ -6,6 +6,7 @@ puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
      "vc_month" + "--" +"INIT"
 
 db = Spensiones.new
+# Fondo A usualmente ultimo en actualizar en spensiones
 lastday_sp = db.vc_last('A')
 lmonth_sp = lastday_sp.month
 lyear_sp = lastday_sp.year
@@ -13,9 +14,9 @@ lyear_sp = lastday_sp.year
 # Check last data
 rawdata = Dir.pwd + '/rawdata/'
 month_file = rawdata + 'month_data.csv'
-# TODO: Caso principio de agno
 year_file = rawdata + "vcfA#{lyear_sp}-#{lyear_sp}.csv"
 
+# TODO: Bug Month 1 year file is empty collabmarket/data_afp/issues/3
 if File.exist?(year_file)
   # Read last line of year_file split and extract last day
   d = IO.readlines(year_file)[-1].split(";")[0]
@@ -27,7 +28,7 @@ else
 end
  
 if File.exist?(month_file)
-  # Warning: from_csv change headers order
+  # Warning: from_csv change headers order v0dro/daru/issues/91
   aux = Daru::DataFrame.from_csv month_file
   # Busca datos incompletos
   aux_nan = aux.filter(:row) do |row|
@@ -39,7 +40,7 @@ if File.exist?(month_file)
   aux =  aux.filter(:row) do |row|
          not fechas_nan.include? row['Fecha']
          end
-  # Fecha primera y ultima linea de month_file
+  # Fecha primera y ultima linea de aux (month_file datos completos)
   firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
   lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
 
@@ -47,6 +48,8 @@ if File.exist?(month_file)
   # Elimina datos mes pasado cuando se agregan en vc_year
   if (year_lastday - firstday).to_i >= 0
     FileUtils.rm_f(month_file)
+    puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+       "vc_month rm month_file" + "--" + "OK"
     aux = db.vc_df_head(lastday_sp, 'A')
     # inicio mes con datos spensiones
     inicio = DateTime.new(lyear_sp,lmonth_sp,1)

@@ -3,7 +3,7 @@ require_relative 'spensiones'
 
 # Exec init
 puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
-     "historical" + "--" +"INIT"
+     "vc_historical" + "--" +"INIT"
 
 db = Spensiones.new
 lastyear = Time.now.year - 1
@@ -25,7 +25,7 @@ rawdata = Dir.pwd + '/rawdata/'
 if not File.exist?(rawdata)
   FileUtils.mkdir(rawdata)
   puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
-  "mkdir rawdata" + "--" +"OK"
+  "vc_historical mkdir rawdata" + "--" +"OK"
 end
 
 # Copia excel valores cuota historicos en rawdata
@@ -33,14 +33,21 @@ for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{inityear[f]}-#{lastyear}.csv", rawdata)
 end
 
-# Remueve la carpeta tmp, eso indica a cleancsv recrear archivos historicos
-FileUtils.rm_rf('tmp')
+# Crea carpeta tmp
+if not File.exist?('tmp')
+  FileUtils.mkdir('tmp')
+  puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
+  "vc_historical mkdir tmp" + "--" +"OK"
+end
+
+# Indica a cleancsv recrear archivos historicos
+FileUtils.touch('tmp/historical')
 puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
-     "rm tmp" + "--" +"OK"
+     "vc_historical touch msg to cleancsv" + "--" +"OK"
 
 # Close Browser
 db.a0.quit
 
 # Exec ok
 puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
-     "historical" + "--" +"DONE"
+     "vc_historical" + "--" +"DONE"

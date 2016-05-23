@@ -1,13 +1,18 @@
+from __future__ import print_function
 import os
 from datetime import datetime
 
-# Si no existe tmp limpia csv historico
-if not os.path.exists('tmp'):
+# Si existe tmp/historical limpia csv historico
+if os.path.exists('tmp/historical'):
     clean_hist = True
 else:
     clean_hist = False
-# Siempre limpia csv presente
-clean_year = True
+
+# Si existe tmp/year limpia csv historico
+if os.path.exists('tmp/year'):
+    clean_year = True
+else:
+    clean_year = False
 
 year = datetime.now().year
 lastyear = year - 1
@@ -23,7 +28,8 @@ yearcsv = ['vcf%s%s-%s.csv'%(i,year,year)
 def maketmp():
     if not os.path.exists('tmp'):
         os.makedirs('tmp')
-        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "mkdir tmp" + "--" + "OK"
+        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
+              "--" + "cleancsv mkdir tmp" + "--" + "OK")
 
 def fillheader(linea):
     ''' Crea un encabezado valido para pandas Multi-level index
@@ -45,8 +51,6 @@ def cleancsv(filecsv):
     # Enumera lineas en blanco que separan trozos de datos
     # Trozos tienen distintas AFP encabezados no homogeneos
     blanks = [i for (i, s) in enumerate(lines) if s == "\n"]
-    # Crea carpeta temporal
-    maketmp()
     
     for j in range(len(blanks)):
         # Crea archivos csv validos con trozos
@@ -68,18 +72,29 @@ def cleancsv(filecsv):
         f_out.close()
 
 def main():
+    print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
+          "--" + "cleancsv" + "--" + "INIT")
+    # Crea carpeta temporal
+    maketmp()
     if clean_hist:
-        # Exec init
-        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "clean_historical" + "--" + "INIT"
         for filecsv in histcsv:
             cleancsv(filecsv)
         # Exec ok
-        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "clean_historical" + "--" + "DONE"
+        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
+              "--" + "cleancsv historical" + "--" + "OK")
+        # Remove msg to clean historical
+        os.remove('tmp/historical')
+
     if clean_year:
         for filecsv in yearcsv:
             cleancsv(filecsv)
         # Exec ok
-        print "[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "--" + "clean_this_year" + "--" + "OK"
+        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
+              "--" + "cleancsv year" + "--" + "OK")
+        # Remove msg to clean year
+        os.remove('tmp/year')
+    print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
+          "--" + "cleancsv" + "--" + "DONE")
 
 if __name__ == "__main__":
     main()

@@ -32,6 +32,18 @@ for f in fondos
   FileUtils.cp(descargas + "vcf#{f}#{year}-#{year}.csv", rawdata)
 end
 
+# Crea carpeta tmp
+if not File.exist?('tmp')
+  FileUtils.mkdir('tmp')
+  puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
+  "vc_year mkdir tmp" + "--" +"OK"
+end
+
+# Indica a cleancsv recrear archivos year
+FileUtils.touch('tmp/year')
+puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
+     "vc_year touch msg to cleancsv" + "--" +"OK"
+
 # Close Browser
 db.a0.quit
 
