@@ -40,24 +40,29 @@ if File.exist?(month_file)
   aux =  aux.filter(:row) do |row|
          not fechas_nan.include? row['Fecha']
          end
-  # Fecha primera y ultima linea de aux (month_file datos completos)
-  firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
-  lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
-
-  # Caso month_file tiene datos de mas de un mes
-  # Elimina datos mes pasado cuando se agregan en vc_year
-  if (year_lastday - firstday).to_i >= 0
-    FileUtils.rm_f(month_file)
-    puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
-       "vc_month rm month_file" + "--" + "OK"
-    aux = db.vc_df_head(lastday_sp, 'A')
-    # inicio mes con datos spensiones
+  # Se eliminaron todos los dias por datos incompletos
+  if aux['Fecha'].to_a == []
     inicio = DateTime.new(lyear_sp,lmonth_sp,1)
-
-  # Caso month_file se puede actualizar
+  # Fecha primera y ultima linea de aux (month_file datos completos)
   else
-    # inicio ultimo dia month_file mas 1
-    inicio = DateTime.new(lastday.year,lastday.month,lastday.day+1)
+    firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
+    lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
+    
+    # Caso month_file tiene datos de mas de un mes
+    # Elimina datos mes pasado cuando se agregan en vc_year
+    if (year_lastday - firstday).to_i >= 0
+      FileUtils.rm_f(month_file)
+      puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+         "vc_month rm month_file" + "--" + "OK"
+      aux = db.vc_df_head(lastday_sp, 'A')
+      # inicio mes con datos spensiones
+      inicio = DateTime.new(lyear_sp,lmonth_sp,1)
+    
+    # Caso month_file se puede actualizar
+    else
+      # inicio ultimo dia month_file mas 1
+      inicio = DateTime.new(lastday.year,lastday.month,lastday.day+1)
+    end
   end
 
 # Caso no existe month_file
