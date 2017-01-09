@@ -16,12 +16,19 @@ rawdata = Dir.pwd + '/rawdata/'
 month_file = rawdata + 'month_data.csv'
 year_file = rawdata + "vcfA#{lyear_sp}-#{lyear_sp}.csv"
 
-# TODO: Bug Month 1 year file is empty collabmarket/data_afp/issues/3
 if File.exist?(year_file)
   # Read last line of year_file split and extract last day
-  d = IO.readlines(year_file)[-1].split(";")[0]
+  d = IO.readlines(year_file)
+  # FIXED: Bug Month 1 year file is empty collabmarket/data_afp/issues/3
+  if d == []
+    year_file = rawdata + "vcfA#{lyear_sp - 1}-#{lyear_sp - 1}.csv"
+    d = IO.readlines(year_file)
+  else
+    old_year_file = rawdata + "vcfA#{lyear_sp - 1}-#{lyear_sp - 1}.csv"
+    FileUtils.rm_f(old_year_file) if File.exist?(old_year_file)
+  end
   # Parse last day of year_file
-  year_lastday = DateTime.strptime(d, '%Y-%m-%d')
+  year_lastday = DateTime.strptime(d[-1].split(";")[0], '%Y-%m-%d')
 else
   # Si no existe year_file ultimo dia mes anterior con datos spensiones
   year_lastday = DateTime.new(lyear_sp,lmonth_sp,1) - 1

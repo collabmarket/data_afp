@@ -1,15 +1,20 @@
 from __future__ import print_function
 import os
+import glob
 from datetime import datetime
 
 # Si existe tmp/historical limpia csv historico
 if os.path.exists('tmp/historical'):
+    for f in glob.glob("tmp/vcf*.csv"):
+        os.remove(f)
     clean_hist = True
 else:
     clean_hist = False
 
 # Si existe tmp/year limpia csv historico
 if os.path.exists('tmp/year'):
+    for f in glob.glob("tmp/vcf*.csv"):
+        os.remove(f)
     clean_year = True
 else:
     clean_year = False
