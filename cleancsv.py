@@ -2,48 +2,54 @@ from __future__ import print_function
 import os
 import glob
 from datetime import datetime
+from datatoolbox import logg_info, makedir
+
+def rm_temp_files():
+    for f in glob.glob("tmp/vcf*.csv"):
+        os.remove(f)
 
 # Si existe tmp/historical limpia csv historico
 if os.path.exists('tmp/historical'):
-    for f in glob.glob("tmp/vcf*.csv"):
-        os.remove(f)
+    rm_temp_files()
     clean_hist = True
 else:
     clean_hist = False
 
 # Si existe tmp/year limpia csv historico
 if os.path.exists('tmp/year'):
-    for f in glob.glob("tmp/vcf*.csv"):
-        os.remove(f)
+    rm_temp_files()
     clean_year = True
 else:
     clean_year = False
 
 year = datetime.now().year
-lastyear = year - 1
-inityear = [2002, 2002, 1981, 2002, 2000]
-fondos = list('ABCDE')
 
-histcsv = ['vcf%s%s-%s.csv'%(i,iy,lastyear) 
-            for i,iy in zip(fondos,inityear)]
+def histcsv_files(year):
+    lastyear = year - 1
+    inityear = [2002, 2002, 1981, 2002, 2000]
+    fondos = list('ABCDE')
+    histcsv = ['vcf%s%s-%s.csv'%(i,iy,lastyear) 
+                for i,iy in zip(fondos,inityear)]
+    return histcsv
 
-yearcsv = ['vcf%s%s-%s.csv'%(i,year,year) 
-            for i in fondos]
+def yearcsv_files(year):
+    fondos = list('ABCDE')
+    return ['vcf%s%s-%s.csv'%(i,year,year) for i in fondos]
 
-def maketmp():
-    if not os.path.exists('tmp'):
-        os.makedirs('tmp')
-        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
-              "--" + "cleancsv mkdir tmp" + "--" + "OK")
+histcsv = histcsv_files(year)
+yearcsv = yearcsv_files(year)
 
 def fillheader(linea):
     ''' Crea un encabezado valido para pandas Multi-level index
     '''
     lista = linea.split(';')
     for i in range(2,len(lista),2):
-        lista[i] = lista[i-1] #Repite Nombre AFP
-    lista[-1] = lista[-1].replace('\n','') # Remueve \n final
-    lista.append(lista[-1]+'\n') #Repite Nombre AFP final y agrega \n
+        #Repite Nombre AFP
+        lista[i] = lista[i-1]
+    # Remueve "\n" final
+    lista[-1] = lista[-1].replace('\n','')
+    #Repite Nombre AFP final y agrega "\n"
+    lista.append(lista[-1]+'\n')
     return ';'.join(lista)
 
 def cleancsv(filecsv):
@@ -77,16 +83,14 @@ def cleancsv(filecsv):
         f_out.close()
 
 def main():
-    print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
-          "--" + "cleancsv" + "--" + "INIT")
+    logg_info('cleancsv', tipo='INFO', status='INIT')
     # Crea carpeta temporal
-    maketmp()
+    makedir('tmp')
     if clean_hist:
         for filecsv in histcsv:
             cleancsv(filecsv)
         # Exec ok
-        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
-              "--" + "cleancsv historical" + "--" + "OK")
+        logg_info('cleancsv historical', tipo='INFO', status='OK')
         # Remove msg to clean historical
         os.remove('tmp/historical')
 
@@ -94,12 +98,10 @@ def main():
         for filecsv in yearcsv:
             cleancsv(filecsv)
         # Exec ok
-        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
-              "--" + "cleancsv year" + "--" + "OK")
+        logg_info('cleancsv year', tipo='INFO', status='OK')
         # Remove msg to clean year
         os.remove('tmp/year')
-    print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
-          "--" + "cleancsv" + "--" + "DONE")
+    logg_info('cleancsv', tipo='INFO', status='DONE')
 
 if __name__ == "__main__":
     main()

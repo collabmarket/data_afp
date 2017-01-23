@@ -2,11 +2,10 @@ from __future__ import print_function
 import glob
 import os
 import pandas as pd
-from datetime import datetime
+from datatoolbox import logg_info, makedir
 
 # Exec init
-print("[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + 
-      "--" + "curator" + "--" + "INIT")
+logg_info('curator', status='INIT')
 
 # Listado archivos cada fondo
 vcfA = glob.glob("tmp/vcfA*.csv")
@@ -17,13 +16,6 @@ vcfE = glob.glob("tmp/vcfE*.csv")
 
 # Opciones escrituda de archivos csv
 karg_csv = dict(sep=';', decimal=',')
-
-# Crea carpeta data
-def makedata():
-    if not os.path.exists('data'):
-        os.makedirs('data')
-        print("[INFO]--" + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + 
-              "--" + "curator mkdir data" + "--" + "OK")
 
 # Concatena archivos con trozos agrega filas y columnas segun el caso
 def concat(vcf):
@@ -45,7 +37,7 @@ data = {'A': concat(vcfA), 'B': concat(vcfB), 'C': concat(vcfC),
 fondos = sorted(data.keys())
 
 # Crea carpeta data
-makedata()
+makedir('data')
 # Recorre todos los fondos
 for letra in fondos:
     aux = data[letra]
@@ -112,5 +104,4 @@ for afp in afps:
         df.to_csv(csvfname, **karg_csv)
 
 # Exec ok
-print("[INFO]--" + datetime.now().strftime('%Y-%M-%d %H:%M:%S') + 
-      "--" + "curator" + "--" + "DONE")
+logg_info('curator', status='DONE')
