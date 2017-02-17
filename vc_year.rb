@@ -1,13 +1,20 @@
 require 'fileutils'
 require_relative 'spensiones'
+require_relative 'datatoolbox'
 
-# Exec init
-puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
-     "vc_year" + "--" +"INIT"
-
+# Variables
 db = Spensiones.new
 year = Time.now.year
 fondos = ['A', 'B', 'C', 'D', 'E']
+
+# Nombres directorios y archivos
+descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
+rawdata = Dir.pwd + '/rawdata/'
+tmp = Dir.pwd + '/tmp'
+thisfile = File.basename(__FILE__)
+
+# Exec init
+logg_info("#{thisfile}", tipo='INFO', status='INIT')
 
 # Descarga excel valores cuota presente año
 for f in fondos
@@ -17,15 +24,8 @@ end
 # Espera 10 seg para que se descargen los archivos
 db.a0.wait.time        10
 
-descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
-rawdata = Dir.pwd + '/rawdata/'
-
 #Crea directorio rawdata si no existe
-if not File.exist?(rawdata)
-  FileUtils.mkdir(rawdata)
-  puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
-  "vc_year mkdir rawdata" + "--" +"OK"
-end
+makedir(rawdata, by=thisfile)
 
 # Copia excel valores cuota presente agno en rawdata
 for f in fondos
@@ -33,20 +33,14 @@ for f in fondos
 end
 
 # Crea carpeta tmp
-if not File.exist?('tmp')
-  FileUtils.mkdir('tmp')
-  puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
-  "vc_year mkdir tmp" + "--" +"OK"
-end
+makedir(tmp, by=thisfile)
 
 # Indica a cleancsv recrear archivos year
 FileUtils.touch('tmp/year')
-puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
-     "vc_year touch msg to cleancsv" + "--" +"OK"
+logg_info("#{thisfile} touch msg to cleancsv", tipo='INFO', status='OK')
 
 # Close Browser
 db.a0.quit
 
 # Exec ok
-puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
-     "vc_year" + "--" + "DONE"
+logg_info("#{thisfile}", tipo='INFO', status='DONE')
