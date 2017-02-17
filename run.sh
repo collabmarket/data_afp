@@ -5,6 +5,7 @@ export PATH=$HOME/miniconda/bin:$PATH
 cd $(dirname "$0")
 LOG_FILE="spension.log"
 DATE=$(date +%Y-%m-%d)
+alias NBC="jupyter nbconvert --to notebook --execute"
 
 {
 git pull
@@ -13,12 +14,12 @@ ruby vc_year.rb
 ruby vc_month.rb
 python cleancsv.py
 python curator.py
-jupyter nbconvert --to notebook --execute ValoresCuotaCapital.ipynb --output ValoresCuotaCapital.ipynb
-jupyter nbconvert --to notebook --execute ValoresCuotaCuprum.ipynb --output ValoresCuotaCuprum.ipynb
-jupyter nbconvert --to notebook --execute ValoresCuotaHabitat.ipynb --output ValoresCuotaHabitat.ipynb
-jupyter nbconvert --to notebook --execute ValoresCuotaModelo.ipynb --output ValoresCuotaModelo.ipynb
-jupyter nbconvert --to notebook --execute ValoresCuotaPlanvital.ipynb --output ValoresCuotaPlanvital.ipynb
-jupyter nbconvert --to notebook --execute ValoresCuotaProvida.ipynb --output ValoresCuotaProvida.ipynb
+NBC ValoresCuotaCapital.ipynb --output ValoresCuotaCapital.ipynb
+NBC ValoresCuotaCuprum.ipynb --output ValoresCuotaCuprum.ipynb
+NBC ValoresCuotaHabitat.ipynb --output ValoresCuotaHabitat.ipynb
+NBC ValoresCuotaModelo.ipynb --output ValoresCuotaModelo.ipynb
+NBC ValoresCuotaPlanvital.ipynb --output ValoresCuotaPlanvital.ipynb
+NBC ValoresCuotaProvida.ipynb --output ValoresCuotaProvida.ipynb
 git add rawdata/*.csv data/*.csv *.ipynb
 git commit -m "Update data and nb $DATE"
 git push
