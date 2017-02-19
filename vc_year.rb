@@ -2,19 +2,19 @@ require 'fileutils'
 require_relative 'spensiones'
 require_relative 'datatoolbox'
 
+# Exec INIT
+thisfile = File.basename(__FILE__)
+logg_info("#{thisfile}", tipo='INFO', status='INIT')
+
 # Variables
 db = Spensiones.new
 year = Time.now.year
 fondos = ['A', 'B', 'C', 'D', 'E']
 
-# Nombres directorios y archivos
+# Nombres directorios
 descargas = Dir.pwd + '/' + db.a0.conf.outdir + '/'
 rawdata = Dir.pwd + '/rawdata/'
 tmp = Dir.pwd + '/tmp'
-thisfile = File.basename(__FILE__)
-
-# Exec init
-logg_info("#{thisfile}", tipo='INFO', status='INIT')
 
 # Descarga excel valores cuota presente año
 for f in fondos
@@ -42,5 +42,5 @@ logg_info("#{thisfile} touch msg to cleancsv", tipo='INFO', status='OK')
 # Close Browser
 db.a0.quit
 
-# Exec ok
+# Exec DONE
 logg_info("#{thisfile}", tipo='INFO', status='DONE')
