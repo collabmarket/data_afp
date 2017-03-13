@@ -5,6 +5,7 @@ export PATH=$HOME/miniconda/bin:$PATH
 cd $(dirname "$0")
 LOG_FILE="spension.log"
 DATE=$(date +%Y-%m-%d)
+shopt -s expand_aliases
 alias NBC="jupyter nbconvert --to notebook --execute"
 
 {
