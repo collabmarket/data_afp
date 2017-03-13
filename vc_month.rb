@@ -2,7 +2,7 @@ require 'fileutils'
 require_relative 'spensiones'
 
 # Exec init
-puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
+puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
      "vc_month" + "--" +"INIT"
 
 db = Spensiones.new
@@ -21,11 +21,14 @@ if File.exist?(year_file)
   d = IO.readlines(year_file)
   # FIXED: Bug Month 1 year file is empty collabmarket/data_afp/issues/3
   if d == []
+    # Use old rawdata
     year_file = rawdata + "vcfA#{lyear_sp - 1}-#{lyear_sp - 1}.csv"
     d = IO.readlines(year_file)
   else
-    old_year_file = rawdata + "vcfA#{lyear_sp - 1}-#{lyear_sp - 1}.csv"
-    FileUtils.rm_f(old_year_file) if File.exist?(old_year_file)
+    # FIXME remove old rawda
+    # git push deleted files avoid Cannot pull with rebase
+    #old_year_file = rawdata + "vcfA#{lyear_sp - 1}-#{lyear_sp - 1}.csv"
+    #FileUtils.rm_f(old_year_file) if File.exist?(old_year_file)
   end
   # Parse last day of year_file
   year_lastday = DateTime.strptime(d[-1].split(";")[0], '%Y-%m-%d')
@@ -33,7 +36,7 @@ else
   # Si no existe year_file ultimo dia mes anterior con datos spensiones
   year_lastday = DateTime.new(lyear_sp,lmonth_sp,1) - 1
 end
- 
+
 if File.exist?(month_file)
   # Warning: from_csv change headers order v0dro/daru/issues/91
   aux = Daru::DataFrame.from_csv month_file
@@ -54,17 +57,17 @@ if File.exist?(month_file)
   else
     firstday = DateTime.strptime(aux['Fecha'][0], '%Y-%m-%d')
     lastday = DateTime.strptime(aux['Fecha'][-1], '%Y-%m-%d')
-    
+
     # Caso month_file tiene datos de mas de un mes
     # Elimina datos mes pasado cuando se agregan en vc_year
     if (year_lastday - firstday).to_i >= 0
       FileUtils.rm_f(month_file)
-      puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+      puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" +
          "vc_month rm month_file" + "--" + "OK"
       aux = db.vc_df_head(lastday_sp, 'A')
       # inicio mes con datos spensiones
       inicio = DateTime.new(lyear_sp,lmonth_sp,1)
-    
+
     # Caso month_file se puede actualizar
     else
       # inicio ultimo dia month_file mas 1
@@ -85,18 +88,18 @@ if (lastday_sp - inicio).to_i == 0
 # Caso month_file actualizado
 elsif (lastday_sp - inicio).to_i == -1
   days = []
-  puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" + 
+  puts "[INFO]--" + Time.now.strftime('%Y-%M-%d %H:%M:%S') + "--" +
        "vc_month" + "--" + "UPDATED"
 else
   begin
     # Caso month_file varios dias
     days = Daru::DateTimeIndex.date_range(
-           :start => inicio, :end => lastday_sp, 
+           :start => inicio, :end => lastday_sp,
            :freq => 'D').to_a
   rescue Exception
-    # Si existe un error no actualiza 
+    # Si existe un error no actualiza
     days = []
-    puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
+    puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
          "vc_month" + "--" + "FAILED"
   end
 end
@@ -122,5 +125,5 @@ FileUtils.cp(descargas + 'month_data.csv', rawdata)
 db.a0.quit
 
 # Exec ok
-puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" + 
+puts "[INFO]--" + Time.now.strftime('%Y-%m-%d %H:%M:%S') + "--" +
      "vc_month" + "--" + "DONE"
