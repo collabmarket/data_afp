@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>data_afp — Valores cuota y patrimonio fondos AFP Chile</title>
+<meta name="description" content="Datos históricos y gráficos de valores cuota y patrimonio de los fondos de pensiones (AFP) de Chile, desde 1981.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1f27;
+    --muted: #5b6472;
+    --card: #f5f7fa;
+    --border: #dde3ea;
+    --accent: #0b5fa5;
+    --accent-fg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151a;
+      --fg: #e8ebef;
+      --muted: #9aa4b1;
+      --card: #1b2028;
+      --border: #2b323d;
+      --accent: #4da3e0;
+      --accent-fg: #0e1116;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.55;
+  }
+  main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  header h1 { margin: 0.5rem 0 0.2rem; font-size: 1.7rem; }
+  header p.sub { margin: 0 0 1rem; color: var(--muted); }
+  a { color: var(--accent); }
+  h2 { margin-top: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0; }
+  .tabs button {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  .tabs button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+  }
+  figure { margin: 1.2rem 0; }
+  figure img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+  }
+  figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+  }
+  .card h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+  .card ul { margin: 0; padding-left: 1.1rem; }
+  .card li { margin: 0.15rem 0; }
+  .overflow { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+  th, td { border: 1px solid var(--border); padding: 0.45rem 0.7rem; text-align: left; }
+  th { background: var(--card); }
+  code { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 0.05rem 0.35rem; font-size: 0.9em; }
+  footer { margin-top: 3rem; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>data_afp</h1>
+  <p class="sub">Valores cuota y patrimonio de los fondos de las AFP de Chile, desde 1981.
+  Fuente: <a href="https://www.spensiones.cl/apps/valoresCuotaFondo/vcfAFP.php">Superintendencia de Pensiones</a>.
+  Datos y código en <a href="https://github.com/collabmarket/data_afp">GitHub</a>.</p>
+</header>
+
+<h2 id="graficos">Gráficos por AFP</h2>
+<div class="tabs" id="tabs" role="tablist"></div>
+<div id="charts"></div>
+
+<h2 id="descargas">Descargar datos (CSV)</h2>
+<p>Separador <code>;</code> y coma decimal (formato chileno). Valor cuota en pesos con decimales;
+patrimonio como entero en pesos.</p>
+
+<div class="grid">
+  <div class="card">
+    <h3>Una AFP, todos los fondos (A–E)</h3>
+    <ul id="dl-afp"></ul>
+  </div>
+  <div class="card">
+    <h3>Un fondo, todas las AFP</h3>
+    <ul id="dl-fondo"></ul>
+  </div>
+</div>
+
+<h3>Descripción de los formatos</h3>
+<div class="overflow">
+<table>
+  <tr><th>Archivo</th><th>Contenido</th></tr>
+  <tr><td><code>VC-&lt;AFP&gt;.csv</code></td><td>Valor cuota de una AFP, columnas = fondos A–E</td></tr>
+  <tr><td><code>PAT-&lt;AFP&gt;.csv</code></td><td>Valor patrimonio de una AFP, columnas = fondos A–E</td></tr>
+  <tr><td><code>vcf&lt;X&gt;.csv</code></td><td>Valor cuota de un fondo, columnas = AFP (incluye históricas desde 1981)</td></tr>
+  <tr><td><code>patf&lt;X&gt;.csv</code></td><td>Valor patrimonio de un fondo, columnas = AFP</td></tr>
+  <tr><td><code>f&lt;X&gt;.csv</code></td><td>Valor cuota y patrimonio de un fondo, columnas (AFP, Item)</td></tr>
+</table>
+</div>
+<p>El listado completo (incluidas AFP históricas como SANTA MARIA o SUMMA BANSANDER) está en
+<a href="https://github.com/collabmarket/data_afp/tree/master/data">la carpeta <code>data/</code></a>.</p>
+
+<footer>
+  Actualización automática diaria vía GitHub Actions.
+  Los valores confirmados se publican dentro de las 24 horas del día hábil siguiente.
+</footer>
+</main>
+
+<script>
+const AFPS = ["CAPITAL", "CUPRUM", "HABITAT", "MODELO", "PLANVITAL", "PROVIDA", "UNO"];
+const FONDOS = ["A", "B", "C", "D", "E"];
+const CHARTS = [
+  ["multifondos",             "Valor cuota multifondos, histórico completo"],
+  ["rentabilidad_anual",      "Rentabilidad anualizada (suma de rentabilidades mensuales)"],
+  ["rentabilidad_semanal",    "Rentabilidad semanal, últimos 365 días"],
+  ["valor_cuota_60d",         "Valor cuota, últimos 60 días"],
+  ["rentabilidad_diaria_60d", "Rentabilidad diaria, últimos 60 días"],
+];
+// Rutas relativas: funcionan en GitHub Pages y en local.
+const DATA = "data/";
+
+const tabs = document.getElementById("tabs");
+const charts = document.getElementById("charts");
+
+function show(afp) {
+  for (const b of tabs.children) b.classList.toggle("active", b.textContent === afp);
+  charts.innerHTML = CHARTS.map(([slug, caption]) => `
+    <figure>
+      <img src="charts/${afp}_${slug}.png" alt="${caption} — ${afp}" loading="lazy">
+      <figcaption>${caption}</figcaption>
+    </figure>`).join("");
+}
+
+for (const afp of AFPS) {
+  const b = document.createElement("button");
+  b.textContent = afp;
+  b.setAttribute("role", "tab");
+  b.onclick = () => { location.hash = afp; show(afp); };
+  tabs.appendChild(b);
+}
+
+const initial = AFPS.includes(location.hash.slice(1)) ? location.hash.slice(1) : AFPS[0];
+show(initial);
+
+// Enlaces de descarga
+document.getElementById("dl-afp").innerHTML = AFPS.map(afp =>
+  `<li>${afp}: <a href="${DATA}VC-${afp}.csv" download>valor cuota</a> ·
+   <a href="${DATA}PAT-${afp}.csv" download>patrimonio</a></li>`).join("");
+
+document.getElementById("dl-fondo").innerHTML = FONDOS.map(f =>
+  `<li>Fondo ${f}: <a href="${DATA}vcf${f}.csv" download>valor cuota</a> ·
+   <a href="${DATA}patf${f}.csv" download>patrimonio</a> ·
+   <a href="${DATA}f${f}.csv" download>ambos</a></li>`).join("");
+</script>
+</body>
+</html>

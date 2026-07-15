@@ -15,6 +15,10 @@ todas las AFP históricas y vigentes (incluida **AFP UNO**).
 > notación científica). Los notebooks de análisis se reemplazaron por el módulo
 > `afpdata.analysis`, que genera los gráficos en [`charts/`](charts).
 
+**🌐 Página web:** gráficos y descargas en
+[collabmarket.github.io/data_afp](https://collabmarket.github.io/data_afp/)
+(requiere GitHub Pages habilitado sobre la rama `master`).
+
 ## Análisis
 
 Gráficos por AFP en [`charts/`](charts): valor cuota multifondos (histórico
