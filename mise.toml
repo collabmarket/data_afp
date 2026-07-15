@@ -1,0 +1,22 @@
+[tools]
+python = "3.12"
+
+[env]
+# Crea y activa automáticamente el venv del proyecto al entrar al directorio.
+_.python.venv = { path = ".venv", create = true }
+
+[tasks.install]
+description = "Instala las dependencias del proyecto"
+run = "pip install -r requirements.txt"
+
+[tasks.update-data]
+description = "Descarga datos desde spensiones.cl y regenera data/"
+run = "python -m afpdata --out-dir data"
+
+[tasks.charts]
+description = "Genera los gráficos de análisis por AFP en charts/"
+run = "python -m afpdata.analysis"
+
+[tasks.all]
+description = "Actualiza datos y regenera gráficos"
+depends = ["update-data", "charts"]

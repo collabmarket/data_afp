@@ -1,0 +1,49 @@
+name: Actualiza datos AFP
+
+# Ejecuta el pipeline a diario y sube los CSV actualizados al repo.
+# Reemplaza al antiguo cron + run.sh (Ruby/Selenium).
+
+on:
+  schedule:
+    # 12:00 UTC ≈ 08:00/09:00 en Chile; los datos del día hábil ya están publicados.
+    - cron: "0 12 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instala dependencias
+        run: pip install -r requirements.txt
+
+      - name: Descarga y procesa
+        run: python -m afpdata --out-dir data
+
+      - name: Regenera gráficos
+        run: python -m afpdata.analysis
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain data charts)" ]; then
+            git add data charts
+            git commit -m "Update data $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "Sin cambios en los datos."
+          fi

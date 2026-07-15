@@ -1,7 +1,21 @@
+# Python
 *.py[cod]
+__pycache__/
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Datos crudos descargados (regenerables)
+raw/
+
+# Notebooks
+.ipynb_checkpoints
+
+# Temporales de la versión antigua
 webdrone_output
 bak
-.ipynb_checkpoints
 tmp
 token.txt
 spension.log
